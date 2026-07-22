@@ -1,0 +1,5 @@
+export const DEFAULT_RESTOCK_MULTIPLIER =
+  2;
+
+export const MAX_RESTOCK_MULTIPLIER =
+  10;
