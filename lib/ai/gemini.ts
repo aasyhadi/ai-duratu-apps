@@ -2,8 +2,8 @@ import "server-only";
 
 import { GoogleGenAI } from "@google/genai";
 
-import { env } from "@/lib/env";
+import { serverEnv } from "@/lib/env.server";
 
 export const gemini = new GoogleGenAI({
-  apiKey: env.geminiApiKey,
+  apiKey: serverEnv.geminiApiKey,
 });

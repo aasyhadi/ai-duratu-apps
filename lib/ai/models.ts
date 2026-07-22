@@ -1,5 +1,6 @@
 import "server-only";
 
-import { env } from "@/lib/env";
+import { serverEnv } from "@/lib/env.server";
 
-export const AI_MODEL = env.geminiModel;
+export const AI_MODEL =
+  serverEnv.geminiModel;

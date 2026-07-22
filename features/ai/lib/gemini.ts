@@ -2,27 +2,22 @@ import "server-only";
 
 import { GoogleGenAI } from "@google/genai";
 
-function getGeminiApiKey(): string {
-  const apiKey = process.env.GEMINI_API_KEY?.trim();
+import { serverEnv } from "@/lib/env.server";
 
-  if (!apiKey) {
-    throw new Error(
-      "GEMINI_API_KEY belum tersedia di file .env.local.",
-    );
-  }
-
-  return apiKey;
-}
+let geminiClient: GoogleGenAI | null = null;
 
 export function getGeminiClient(): GoogleGenAI {
-  return new GoogleGenAI({
-    apiKey: getGeminiApiKey(),
-  });
+  if (!geminiClient) {
+    geminiClient = new GoogleGenAI({
+      apiKey: serverEnv.geminiApiKey,
+    });
+  }
+
+  return geminiClient;
 }
 
 export function getGeminiModel(): string {
-  return (
-    process.env.GEMINI_MODEL?.trim() ||
-    "gemini-3.5-flash"
-  );
+  return serverEnv.geminiModel;
 }
+
+export const gemini = getGeminiClient();
