@@ -1,4 +1,4 @@
-# ☕ Duratu Kafe — AI-Powered Business Management System
+# ☕ Duratu Kafe — AI-Powered Apps
 
 > From a conventional business application to an AI-powered
 > business assistant using Gemini, RAG, Vector Search, and AI Agent.
@@ -8,7 +8,7 @@
 <div align="center">
 
 <img
-  src="docs/images/ai-assistant.png"
+  src="docs/images/ai-assistant.jpg"
   alt="Duratu Kafe AI Assistant"
   width="100%"
 />
