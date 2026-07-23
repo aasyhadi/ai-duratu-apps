@@ -14,6 +14,10 @@ import {
   buttonVariants,
 } from "@/components/ui/button";
 
+import {
+  CreatePurchaseOrderButton,
+} from "@/features/purchase-orders/components/create-purchase-order-button";
+
 import { getPurchaseRequest } from "@/features/purchases/queries/get-purchase-request";
 import {
   formatPurchaseCurrency,
@@ -121,16 +125,48 @@ export default async function PurchaseRequestDetailPage({
             </p>
           </div>
 
-          <div className="rounded-xl border bg-card px-5 py-4 text-right shadow-sm">
-            <p className="text-sm text-muted-foreground">
-              Estimasi Total
-            </p>
+          <div className="space-y-3">
+            <div className="rounded-xl border bg-card px-5 py-4 text-right shadow-sm">
+              <p className="text-sm text-muted-foreground">
+                Estimasi Total
+              </p>
 
-            <p className="mt-1 text-2xl font-bold">
-              {formatPurchaseCurrency(
-                request.estimatedTotal,
-              )}
-            </p>
+              <p className="mt-1 text-2xl font-bold">
+                {formatPurchaseCurrency(
+                  request.estimatedTotal,
+                )}
+              </p>
+            </div>
+
+            {request.status ===
+            "approved" ? (
+              <CreatePurchaseOrderButton
+                purchaseRequestId={
+                  request.id
+                }
+                expectedDate={
+                  request.expectedDate
+                }
+                notes={
+                  request.notes
+                }
+                disabled={
+                  request.supplierId ===
+                  null
+                }
+              />
+            ) : null}
+
+            {request.status ===
+              "approved" &&
+            request.supplierId ===
+              null ? (
+              <p className="max-w-sm text-sm text-amber-700 dark:text-amber-300">
+                Pilih supplier terlebih
+                dahulu sebelum membuat
+                Purchase Order.
+              </p>
+            ) : null}
           </div>
         </div>
       </header>

@@ -13,8 +13,8 @@ type CategoryRule = {
   keywords: readonly string[];
 
   /**
-   * Digunakan jika dua kategori
-   * memiliki skor sama.
+   * Digunakan ketika dua kategori
+   * mempunyai skor keyword yang sama.
    */
   priority: number;
 };
@@ -55,8 +55,122 @@ type IntentCandidate = {
 const CATEGORY_RULES: readonly CategoryRule[] =
   [
     {
+      category: "inventory",
+
+      /**
+       * Inventory harus memiliki prioritas
+       * lebih tinggi daripada product.
+       *
+       * Pertanyaan "stok kopi" mengandung
+       * kata kopi dan stok, tetapi domain
+       * yang benar adalah inventory.
+       */
+      priority: 80,
+
+      keywords: [
+        "stok",
+        "persediaan",
+        "inventory",
+        "restock",
+        "stok menipis",
+        "stok rendah",
+        "stok minimum",
+        "minimum stok",
+        "minimum stock",
+        "stok habis",
+        "kehabisan stok",
+        "barang habis",
+        "produk habis",
+        "menu habis",
+        "jumlah stok",
+        "total stok",
+        "nilai persediaan",
+        "nilai inventory",
+        "pergerakan stok",
+        "mutasi stok",
+        "stok masuk",
+        "stok keluar",
+      ],
+    },
+
+    {
+      category: "supplier",
+      priority: 70,
+
+      keywords: [
+        "supplier",
+        "pemasok",
+        "vendor",
+        "supplier aktif",
+        "supplier tidak aktif",
+        "pemasok aktif",
+        "pemasok tidak aktif",
+        "daftar supplier",
+        "daftar pemasok",
+        "kontak supplier",
+        "kontak pemasok",
+        "nomor supplier",
+        "nomor telepon supplier",
+        "telepon supplier",
+        "email supplier",
+        "alamat supplier",
+      ],
+    },
+
+    {
+      category: "purchase",
+      priority: 60,
+
+      keywords: [
+        "purchase order",
+        "purchase request",
+
+        "po pembelian",
+        "permintaan pembelian",
+        "pesanan pembelian",
+        "order pembelian",
+
+        "pembelian barang",
+        "pembelian bahan",
+
+        "po terakhir",
+        "po terbaru",
+        "po paling baru",
+
+        "po terbesar",
+        "po paling besar",
+        "nilai po",
+        "total po",
+
+        "po mana",
+        "po yang",
+
+        "status po",
+        "daftar po",
+        "nomor po",
+
+        "po belum selesai",
+        "po yang belum selesai",
+        "po masih berjalan",
+        "po yang masih berjalan",
+
+        "po selesai",
+        "po yang selesai",
+
+        "po dibatalkan",
+        "po dikonfirmasi",
+        "po dikirim",
+        "po terkirim",
+        "po draft",
+
+        "diterima sebagian",
+      ],
+    },
+
+    {
       category: "report",
-      priority: 40,
+      priority: 50,
+
       keywords: [
         "laporan",
         "ringkasan",
@@ -83,9 +197,11 @@ const CATEGORY_RULES: readonly CategoryRule[] =
         "pengeluaran terbesar",
       ],
     },
+
     {
       category: "sales",
-      priority: 30,
+      priority: 40,
+
       keywords: [
         "penjualan",
         "pendapatan",
@@ -108,17 +224,19 @@ const CATEGORY_RULES: readonly CategoryRule[] =
         "total pendapatan",
       ],
     },
+
     {
       category: "transaction",
-      priority: 20,
+      priority: 30,
+
       keywords: [
         "transaksi",
         "pembayaran",
         "struk",
         "invoice",
         "nota",
-        "pesanan",
-        "order",
+        "pesanan pelanggan",
+        "order pelanggan",
         "refund",
         "pengembalian dana",
         "metode pembayaran",
@@ -131,9 +249,11 @@ const CATEGORY_RULES: readonly CategoryRule[] =
         "total transaksi",
       ],
     },
+
     {
       category: "product",
-      priority: 10,
+      priority: 20,
+
       keywords: [
         "produk",
         "menu",
@@ -142,16 +262,15 @@ const CATEGORY_RULES: readonly CategoryRule[] =
         "kopi",
         "harga produk",
         "harga menu",
-        "stok",
-        "persediaan",
         "kategori produk",
         "produk aktif",
         "produk tidak aktif",
         "menu tersedia",
-        "menu habis",
         "harga jual",
         "harga modal",
         "food cost",
+        "sku",
+        "satuan produk",
       ],
     },
   ] as const;
@@ -161,6 +280,7 @@ const INTENT_RULES: readonly IntentRule[] =
     {
       intent: "report",
       priority: 40,
+
       keywords: [
         "buat laporan",
         "buatkan laporan",
@@ -175,9 +295,11 @@ const INTENT_RULES: readonly IntentRule[] =
         "laporan",
       ],
     },
+
     {
       intent: "business_data",
       priority: 30,
+
       keywords: [
         "berapa",
         "berapa banyak",
@@ -186,6 +308,16 @@ const INTENT_RULES: readonly IntentRule[] =
         "total",
         "jumlah",
         "nilai",
+        "tampilkan",
+        "daftar",
+        "siapa",
+        "mana",
+        "apa saja",
+        "kontak",
+        "nomor telepon",
+        "email",
+        "alamat",
+        "status",
         "tertinggi",
         "terendah",
         "terlaris",
@@ -209,11 +341,19 @@ const INTENT_RULES: readonly IntentRule[] =
         "penyebab",
         "komposisi",
         "persentase",
+        "aktif",
+        "tidak aktif",
+        "terbaru",
+        "terakhir",
+        "belum selesai",
+        "sudah selesai",
       ],
     },
+
     {
       intent: "definition",
       priority: 20,
+
       keywords: [
         "apa itu",
         "apa yang dimaksud",
@@ -225,9 +365,11 @@ const INTENT_RULES: readonly IntentRule[] =
         "jelaskan apa",
       ],
     },
+
     {
       intent: "advice",
       priority: 10,
+
       keywords: [
         "bagaimana cara",
         "bagaimana meningkatkan",
@@ -273,7 +415,10 @@ function normalizeQuestion(
   return question
     .toLocaleLowerCase("id-ID")
     .normalize("NFKD")
-    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .replace(
+      /[^\p{L}\p{N}\s-]/gu,
+      " ",
+    )
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -281,7 +426,9 @@ function normalizeQuestion(
 function normalizeKeyword(
   keyword: string,
 ): string {
-  return normalizeQuestion(keyword);
+  return normalizeQuestion(
+    keyword,
+  );
 }
 
 function containsKeyword(
@@ -304,41 +451,52 @@ function findMatchedKeywords(
   normalizedQuestion: string,
   keywords: readonly string[],
 ): string[] {
-  return keywords.filter((keyword) =>
-    containsKeyword(
-      normalizedQuestion,
-      keyword,
-    ),
+  return keywords.filter(
+    (keyword) =>
+      containsKeyword(
+        normalizedQuestion,
+        keyword,
+      ),
   );
 }
 
 function buildCategoryCandidates(
   normalizedQuestion: string,
 ): CategoryCandidate[] {
-  return CATEGORY_RULES.map((rule) => {
-    const matchedKeywords =
-      findMatchedKeywords(
-        normalizedQuestion,
-        rule.keywords,
-      );
+  return CATEGORY_RULES.map(
+    (rule): CategoryCandidate => {
+      const matchedKeywords =
+        findMatchedKeywords(
+          normalizedQuestion,
+          rule.keywords,
+        );
 
-    return {
-      category: rule.category,
-      priority: rule.priority,
-      matchedKeywords,
-      score: matchedKeywords.length,
-    };
-  })
+      return {
+        category:
+          rule.category,
+
+        priority:
+          rule.priority,
+
+        matchedKeywords,
+
+        score:
+          matchedKeywords.length,
+      };
+    },
+  )
     .filter(
       (candidate) =>
         candidate.score > 0,
     )
     .sort((first, second) => {
       if (
-        second.score !== first.score
+        second.score !==
+        first.score
       ) {
         return (
-          second.score - first.score
+          second.score -
+          first.score
         );
       }
 
@@ -352,30 +510,40 @@ function buildCategoryCandidates(
 function buildIntentCandidates(
   normalizedQuestion: string,
 ): IntentCandidate[] {
-  return INTENT_RULES.map((rule) => {
-    const matchedKeywords =
-      findMatchedKeywords(
-        normalizedQuestion,
-        rule.keywords,
-      );
+  return INTENT_RULES.map(
+    (rule): IntentCandidate => {
+      const matchedKeywords =
+        findMatchedKeywords(
+          normalizedQuestion,
+          rule.keywords,
+        );
 
-    return {
-      intent: rule.intent,
-      priority: rule.priority,
-      matchedKeywords,
-      score: matchedKeywords.length,
-    };
-  })
+      return {
+        intent:
+          rule.intent,
+
+        priority:
+          rule.priority,
+
+        matchedKeywords,
+
+        score:
+          matchedKeywords.length,
+      };
+    },
+  )
     .filter(
       (candidate) =>
         candidate.score > 0,
     )
     .sort((first, second) => {
       if (
-        second.score !== first.score
+        second.score !==
+        first.score
       ) {
         return (
-          second.score - first.score
+          second.score -
+          first.score
         );
       }
 
@@ -431,10 +599,9 @@ function resolveCategory(
   intent: QuestionIntent,
 ): QuestionCategory {
   /**
-   * Pertanyaan definisi atau saran umum
-   * tidak perlu dianggap sebagai permintaan
-   * data bisnis, walaupun mengandung kata
-   * seperti "produk" atau "food cost".
+   * Pertanyaan definisi atau saran
+   * tidak memerlukan query data bisnis,
+   * walaupun mengandung istilah bisnis.
    */
   if (
     intent === "definition" ||
@@ -444,7 +611,8 @@ function resolveCategory(
   }
 
   return (
-    categoryCandidate?.category ??
+    categoryCandidate
+      ?.category ??
     "general"
   );
 }
@@ -453,12 +621,15 @@ function shouldRetrieveBusinessData(
   category: QuestionCategory,
   intent: QuestionIntent,
 ): boolean {
-  if (category === "general") {
+  if (
+    category === "general"
+  ) {
     return false;
   }
 
   return (
-    intent === "business_data" ||
+    intent ===
+      "business_data" ||
     intent === "report"
   );
 }
@@ -467,16 +638,29 @@ export function analyzeQuestion(
   question: string,
 ): QuestionAnalysis {
   const normalizedQuestion =
-    normalizeQuestion(question);
+    normalizeQuestion(
+      question,
+    );
 
   if (!normalizedQuestion) {
     return {
-      category: "general",
-      intent: "unknown",
-      confidence: 0,
-      matchedKeywords: [],
-      matchedIntentKeywords: [],
-      requiresBusinessData: false,
+      category:
+        "general",
+
+      intent:
+        "unknown",
+
+      confidence:
+        0,
+
+      matchedKeywords:
+        [],
+
+      matchedIntentKeywords:
+        [],
+
+      requiresBusinessData:
+        false,
     };
   }
 
@@ -496,14 +680,16 @@ export function analyzeQuestion(
   const bestIntentCandidate =
     intentCandidates[0];
 
-  const intent = resolveIntent(
-    bestIntentCandidate,
-  );
+  const intent =
+    resolveIntent(
+      bestIntentCandidate,
+    );
 
-  const category = resolveCategory(
-    bestCategoryCandidate,
-    intent,
-  );
+  const category =
+    resolveCategory(
+      bestCategoryCandidate,
+      intent,
+    );
 
   const matchedTimeKeywords =
     findMatchedKeywords(
@@ -515,15 +701,18 @@ export function analyzeQuestion(
     ...new Set([
       ...(
         bestCategoryCandidate
-          ?.matchedKeywords ?? []
+          ?.matchedKeywords ??
+        []
       ),
+
       ...matchedTimeKeywords,
     ]),
   ];
 
   const matchedIntentKeywords =
     bestIntentCandidate
-      ?.matchedKeywords ?? [];
+      ?.matchedKeywords ??
+    [];
 
   return {
     category,
@@ -532,12 +721,16 @@ export function analyzeQuestion(
     confidence:
       calculateConfidence(
         bestCategoryCandidate
-          ?.matchedKeywords.length ?? 0,
+          ?.matchedKeywords
+          .length ??
+          0,
 
-        matchedIntentKeywords.length,
+        matchedIntentKeywords
+          .length,
       ),
 
     matchedKeywords,
+
     matchedIntentKeywords,
 
     requiresBusinessData:

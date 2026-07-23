@@ -1,6 +1,9 @@
 export type QuestionCategory =
   | "general"
   | "product"
+  | "inventory"
+  | "supplier"
+  | "purchase"
   | "transaction"
   | "sales"
   | "report";
@@ -18,11 +21,11 @@ export type QuestionAnalysis = {
   intent: QuestionIntent;
 
   /**
-   * Nilai 0 sampai 1.
+   * Nilai antara 0 sampai 1.
    *
-   * Pada analyzer rule-based, confidence
-   * ditentukan berdasarkan jumlah sinyal
-   * yang ditemukan.
+   * Pada analyzer rule-based,
+   * confidence ditentukan berdasarkan
+   * jumlah sinyal yang ditemukan.
    */
   confidence: number;
 

@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { analyzeQuestion } from "@/features/ai/analyzers/question-analyzer";
-import { analyzeTransactionQuery } from "@/features/ai/analyzers/transaction-query-analyzer";
-import { buildBusinessContext } from "@/features/ai/builders/context-builder";
 import {
   getGeminiClient,
   getGeminiModel,
 } from "@/features/ai/lib/gemini";
 import { CAFE_AI_SYSTEM_PROMPT } from "@/features/ai/prompts/system-prompt";
-import { retrieveTransactions } from "@/features/ai/retrievers/transaction-retriever";
+import { provideKnowledge } from "@/features/ai/providers/knowledge-provider";
 import { chatMessageSchema } from "@/features/ai/schemas/chat-schema";
+import { analyzeQuestion } from "@/features/ai/analyzers/question-analyzer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -268,8 +266,12 @@ Aturan:
 - Jangan menghitung ulang angka menggunakan perkiraan.
 - Jangan mengarang data yang tidak tersedia.
 - Jangan mengatakan bahwa Anda tidak memiliki akses database.
-- Sebutkan periode data yang digunakan.
-- Jika jumlah transaksi adalah 0, katakan bahwa tidak ada transaksi pada periode tersebut.
+- Gunakan hanya domain data yang tersedia di dalam context.
+- Jika data yang diminta tidak ditemukan, nyatakan dengan jelas bahwa data tersebut tidak ditemukan.
+- Untuk transaksi, sebutkan periode data jika tersedia.
+- Untuk persediaan, sebutkan stok saat ini, satuan, batas minimum, dan status bila relevan.
+- Jangan mengklaim telah melakukan pembelian, restock, perubahan stok, atau transaksi baru.
+- Bedakan fakta data dengan rekomendasi.
 - Jelaskan hasil dengan Bahasa Indonesia yang jelas.
 - Gunakan format Markdown jika membantu keterbacaan.
 `.trim();
@@ -311,98 +313,36 @@ export async function POST(
     previousInteractionId,
   } = validationResult.data;
 
-  const questionAnalysis =
-    analyzeQuestion(message);
-
-  if (
-    process.env.NODE_ENV ===
-    "development"
-  ) {
-    console.info(
-      "Duratu AI question analysis:",
-      {
-        question: message,
-
-        category:
-          questionAnalysis.category,
-
-        intent:
-          questionAnalysis.intent,
-
-        confidence:
-          questionAnalysis.confidence,
-
-        matchedKeywords:
-          questionAnalysis
-            .matchedKeywords,
-
-        matchedIntentKeywords:
-          questionAnalysis
-            .matchedIntentKeywords,
-
-        requiresBusinessData:
-          questionAnalysis
-            .requiresBusinessData,
-      },
-    );
-  }
-
   try {
-    let businessContext = "";
+    const questionAnalysis =
+      analyzeQuestion(message);
+
+    const knowledge = await provideKnowledge(
+        message,
+        questionAnalysis,
+      );
 
     if (
-      questionAnalysis
-        .requiresBusinessData
+      process.env.NODE_ENV ===
+      "development"
     ) {
-      const transactionQuery =
-        analyzeTransactionQuery(
-          message,
-        );
-
-      const transactionContext =
-        await retrieveTransactions({
-          kind:
-            transactionQuery.kind,
-
-          dateRange:
-            transactionQuery.dateRange,
-        });
-
-      businessContext =
-        buildBusinessContext(
-          transactionContext,
-        );
-
-      if (
-        process.env.NODE_ENV ===
-        "development"
-      ) {
-        console.info(
-          "Duratu AI transaction query:",
-          {
-            kind:
-              transactionQuery.kind,
-
-            dateRange:
-              transactionQuery.dateRange,
-
-            matchedKeywords:
-              transactionQuery
-                .matchedKeywords,
-          },
-        );
-
-        console.info(
-          "Duratu AI business context:",
-          businessContext,
-        );
-      }
+      console.info(
+        "Duratu AI knowledge:",
+        {
+          question: message,
+          domain: knowledge.domain,
+          hasContext:
+            Boolean(
+              knowledge.context.trim(),
+            ),
+        },
+      );
     }
 
     const geminiInput =
       buildGeminiInput(
         message,
-        businessContext,
+        knowledge.context,
       );
 
     const ai =
@@ -593,7 +533,7 @@ export async function POST(
       )
     ) {
       return createErrorResponse(
-        "Data transaksi Duratu Kafe gagal diambil dari Supabase.",
+        "Data bisnis Duratu Kafe gagal diambil dari Supabase.",
         500,
       );
     }

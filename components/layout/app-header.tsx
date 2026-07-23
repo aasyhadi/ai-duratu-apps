@@ -11,7 +11,7 @@ export function AppHeader() {
         <MobileSidebar />
 
         <div>
-          <p className="font-semibold">AI Powered Apps</p>
+          <p className="font-semibold">AI Duratu Kafe Apps</p>
           <p className="hidden text-xs text-muted-foreground sm:block">
             Belajar aplikasi konvensional hingga AI Agent
           </p>

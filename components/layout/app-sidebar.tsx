@@ -18,7 +18,7 @@ export function AppSidebar() {
         </div>
 
         <div>
-          <p className="font-semibold leading-none">AI Powered Apps</p>
+          <p className="font-semibold leading-none">AI Duratu Kafe Apps</p>
           <p className="mt-1 text-xs text-muted-foreground">
             Fundamental Course
           </p>

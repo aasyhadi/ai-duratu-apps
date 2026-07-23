@@ -40,7 +40,7 @@ export function MobileSidebar() {
               <Coffee className="size-5" />
             </span>
 
-            <span>AI Powered Apps</span>
+            <span>AI Duratu Kafe Apps</span>
           </SheetTitle>
         </SheetHeader>
 

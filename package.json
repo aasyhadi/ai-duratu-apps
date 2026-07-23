@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:question-analyzer": "tsx --test features/ai/analyzers/__tests__/question-analyzer.test.ts",
-    "test:transaction-query": "tsx --test features/ai/analyzers/__tests__/transaction-query-analyzer.test.ts"
+    "test:transaction-query": "tsx --test features/ai/analyzers/__tests__/transaction-query-analyzer.test.ts",
+    "seed:knowledge": "tsx scripts/seed-knowledge.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -37,6 +38,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
